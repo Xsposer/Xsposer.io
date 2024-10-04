@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>原神</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+            font-family: Arial, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .video-background {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            z-index: -1;
+        }
+        .music-toggle {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 1.44em; /* 1.2倍大小 */
+            color: yellow; /* 颜色变为黄色 */
+            opacity: 0.75; /* 设置透明度为75% */
+            cursor: pointer; /* 恢复点击功能 */
+            z-index: 1;
+            text-shadow: 2px 2px 4px #000000; /* 添加立体效果 */
+        }
+        @keyframes colorChange {
+            0% { color: red; }
+            33% { color: green; }
+            66% { color: blue; }
+            100% { color: red; }
+        }
+        .link {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 1.2em;
+            color: gray;
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s;
+            z-index: 1;
+        }
+        .link:hover {
+            color: darkgray;
+        }
+        .text-link {
+            font-size: 6em;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            opacity: 0.7;
+            animation: rainbowFade 7s infinite;
+            margin-top: 20px;
+            font-family: 'Comic Sans MS', cursive, sans-serif;
+            text-shadow: 2px 2px 4px #000000;
+            text-align: center;
+        }
+        @keyframes rainbowFade {
+            0%, 14.28% { color: red; opacity: 1; }
+            14.28%, 28.56% { color: orange; opacity: 0; }
+            28.56%, 42.84% { color: yellow; opacity: 1; }
+            42.84%, 57.12% { color: green; opacity: 0; }
+            57.12%, 71.4% { color: cyan; opacity: 1; }
+            71.4%, 85.68% { color: blue; opacity: 0; }
+            85.68%, 100% { color: purple; opacity: 1; }
+        }
+        #videoModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            justify-content: center;
+            align-items: center;
+        }
+        #videoModal video {
+            max-width: 80%;
+            max-height: 80%;
+        }
+        .arrow-button {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 3em;
+            color: white;
+            animation: float 2s infinite alternate, flicker 1s infinite alternate;
+            cursor: pointer;
+        }
+        @keyframes float {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-10px); }
+        }
+        .hidden-buttons {
+            display: none;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            flex-direction: row;
+            align-items: center;
+            background-color: rgba(173, 216, 230, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+        }
+        .hidden-buttons button {
+            margin: 5px;
+            font-size: 1.5em;
+            padding: 10px 20px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            color: white;
+        }
+        .service-message {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 1.2em;
+            color: white;
+            background-color: rgba(0, 0, 0, 0.7);
+            padding: 10px;
+            border-radius: 5px;
+            z-index: 2;
+            opacity: 1;
+            transition: opacity 1s ease-out;
+        }
+        @media (max-width: 768px) {
+            .text-link {
+                font-size: 3em;
+            }
+            .arrow-button {
+                font-size: 2em;
+                bottom: 30px;
+            }
+            .hidden-buttons button {
+                font-size: 1em;
+                padding: 5px 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <video autoplay muted loop class="video-background">
+        <source src="https://act-webstatic.mihoyo.com/puzzle/hk4e/pz_YvJfNJEi5F/resource/puzzle/2024/09/23/94927edf50261e3c1146f0d44db68b3f_8829009084590888673.mp4" type="video/mp4">
+        您的浏览器不支持HTML5视频。
+    </video>
+
+    <audio id="backgroundMusic" loop>
+        <source src="https://music.163.com/song/media/outer/url?id=1481392130.mp3" type="audio/mpeg">
+        您的浏览器不支持音频播放。
+    </audio>
+
+    <div class="music-toggle" onclick="toggleMusic()">音乐</div>
+
+    <a href="https://ys.mihoyo.com/main/" class="link">>>进入官网</a>
+    
+    <div class="text-link" onclick="showVideo()">miHoYo</div>
+
+    <div id="videoModal" onclick="hideVideo()">
+        <video id="videoPlayer" controls>
+            <source src="https://webstatic.mihoyo.com/upload/op-public/2020/09/27/fd431739ff26ceeb3010ac561d68446b_345688670889091949.mp4" type="video/mp4">
+            您的浏览器不支持HTML5视频。
+        </video>
+    </div>
+
+    <div class="arrow-button" onclick="toggleButtons()">ᐁ</div>
+
+    <div class="hidden-buttons" id="hiddenButtons">
+        <button onclick="toggleServiceMessage()">技术服务支持</button>
+    </div>
+
+    <div class="service-message" id="serviceMessage">
+        服务暂停
+    </div>
+
+    <script>
+        window.onload = function() {
+            if (/Mobi|Android/i.test(navigator.userAgent)) {
+                alert("请用自带浏览器打开");
+            }
+        };
+
+        function toggleMusic() {
+            window.location.href = "https://example.com"; // 替换为您指定的网页URL
+        }
+
+        function showVideo() {
+            document.getElementById('videoModal').style.display = 'flex';
+            document.getElementById('videoPlayer').play();
+        }
+
+        function hideVideo() {
+            const videoModal = document.getElementById('videoModal');
+            const video = document.getElementById('videoPlayer');
+            video.pause();
+            video.currentTime = 0;
+            videoModal.style.display = 'none';
+        }
+
+        function toggleButtons() {
+            const hiddenButtons = document.getElementById('hiddenButtons');
+            if (hiddenButtons.style.display === 'none' || hiddenButtons.style.display === '') {
+                hiddenButtons.style.display = 'flex';
+                hiddenButtons.style.animation = 'slideUp 0.5s forwards';
+            } else {
+                hiddenButtons.style.display = 'none';
+            }
+        }
+
+        function toggleServiceMessage() {
+            const serviceMessage = document.getElementById('serviceMessage');
+            serviceMessage.style.display = 'block';
+            setTimeout(() => {
+                serviceMessage.style.opacity = '0';
+                setTimeout(() => {
+                    serviceMessage.style.display = 'none';
+                    serviceMessage.style.opacity = '1'; // Reset opacity for next time
+                }, 1000); // Match this duration with the CSS transition
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

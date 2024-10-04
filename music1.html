@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>音乐</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            background-color: #000; /* 黑色背景 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            grid-template-rows: repeat(3, 1fr);
+            gap: 20px; /* 扩大方块之间的间距 */
+            width: 90vw;
+            height: 90vh;
+            padding: 10px; /* 方块与页面边缘的间距 */
+        }
+        .box {
+            background-size: cover; /* 背景图片覆盖整个方块 */
+            background-position: center; /* 背景图片居中 */
+            border: 2px solid #007BFF; /* 蓝色边框 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #FFD700; /* 金色字体 */
+            font-size: 24px;
+            font-weight: bold; /* 加粗字体 */
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 立体阴影效果 */
+            border-radius: 10px; /* 圆角 */
+            transition: transform 0.3s, border-color 0.3s; /* 悬停效果 */
+            cursor: pointer;
+        }
+        .box:hover, .box.active {
+            transform: scale(1.05);
+            border-color: #0056b3; /* 悬停时改变边框颜色 */
+        }
+        .box.moving {
+            animation: moveUpDown 2s infinite alternate ease-in-out;
+        }
+        .box.playing {
+            animation: borderGradient 3s infinite;
+        }
+        @keyframes moveUpDown {
+            from {
+                transform: translateY(0);
+            }
+            to {
+                transform: translateY(-10px);
+            }
+        }
+        @keyframes borderGradient {
+            0% {
+                border-color: #ff0000;
+            }
+            25% {
+                border-color: #00ff00;
+            }
+            50% {
+                border-color: #0000ff;
+            }
+            75% {
+                border-color: #ffff00;
+            }
+            100% {
+                border-color: #ff0000;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 生成9个方块，添加背景图片和音乐链接 -->
+        <div class="box" style="background-image: url('1.png');" data-music="https://music.163.com/song/media/outer/url?id=1454897840.mp3">莫问归期</div>
+        <div class="box" style="background-image: url('2.png');" data-music="https://music.163.com/song/media/outer/url?id=2604257721.mp3">年轮(大爱仙尊版)</div>
+        <div class="box" style="background-image: url('3.png');" data-music="https://music.163.com/song/media/outer/url?id=2157931259.mp3">此去半生DJ</div>
+        <div class="box" style="background-image: url('4.png');" data-music="https://music.163.com/song/media/outer/url?id=2630220659.mp3">鸳鸯戏DJ</div>
+        <div class="box" style="background-image: url('5.png');" data-music="https://music.163.com/song/media/outer/url?id=2007733647.mp3">精卫（琵琶版-老祖宗登场曲）</div>
+        <div class="box" style="background-image: url('6.png');" data-music="https://music.163.com/song/media/outer/url?id=445154140.mp3">最后一页</div>
+        <div class="box" style="background-image: url('7.png');" data-music="https://music.163.com/song/media/outer/url?id=2602981401.mp3">折风渡夜（少帅进行曲）</div>
+        <div class="box" style="background-image: url('8.png');" data-music="https://music.163.com/song/media/outer/url?id=2143445544.mp3">DOAR CU TINE(雷军进行曲)</div>
+        <div class="box" style="background-image: url('9.png');" data-music="https://music.163.com/song/media/outer/url?id=2632667453.mp3">难却DJ</div>
+    </div>
+
+    <audio id="audio-player" controls style="display:none;"></audio> <!-- 隐藏的音频播放器 -->
+
+    <script>
+        const boxes = document.querySelectorAll('.box');
+        const audioPlayer = document.getElementById('audio-player');
+        let currentBox = null;
+
+        boxes.forEach(box => {
+            box.addEventListener('click', () => {
+                if (box === currentBox) {
+                    // 如果再次点击同一个方块，暂停音乐并移除动画
+                    audioPlayer.pause();
+                    box.classList.remove('active', 'moving', 'playing');
+                    currentBox = null;
+                } else {
+                    // 移除所有方块的active类和动画
+                    boxes.forEach(b => {
+                        b.classList.remove('active', 'moving', 'playing');
+                    });
+                    // 为当前点击的方块添加active类和动画
+                    box.classList.add('active', 'moving', 'playing');
+
+                    // 播放音乐
+                    const musicUrl = box.getAttribute('data-music');
+                    if (musicUrl) {
+                        audioPlayer.src = musicUrl;
+                        audioPlayer.play();
+                    }
+                    currentBox = box;
+                }
+            });
+        });
+
+        // 当音乐停止时，移除动画
+        audioPlayer.addEventListener('ended', () => {
+            if (currentBox) {
+                currentBox.classList.remove('moving', 'playing');
+                currentBox = null;
+            }
+        });
+    </script>
+</body>
+</html>
