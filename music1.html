@@ -35,18 +35,21 @@
             font-weight: bold; /* 加粗字体 */
             text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7); /* 立体阴影效果 */
             border-radius: 10px; /* 圆角 */
-            transition: transform 0.3s, border-color 0.3s; /* 悬停效果 */
+            transition: transform 0.3s, border-color 0.3s, filter 0.3s; /* 悬停效果 */
             cursor: pointer;
+            filter: grayscale(100%); /* 默认黑白色调 */
         }
         .box:hover, .box.active {
             transform: scale(1.05);
             border-color: #0056b3; /* 悬停时改变边框颜色 */
+            filter: grayscale(0%); /* 恢复原色 */
         }
         .box.moving {
             animation: moveUpDown 2s infinite alternate ease-in-out;
         }
         .box.playing {
             animation: borderGradient 3s infinite;
+            filter: grayscale(0%); /* 播放时恢复原色 */
         }
         @keyframes moveUpDown {
             from {
@@ -86,7 +89,7 @@
         <div class="box" style="background-image: url('6.png');" data-music="https://music.163.com/song/media/outer/url?id=445154140.mp3">最后一页</div>
         <div class="box" style="background-image: url('7.png');" data-music="https://music.163.com/song/media/outer/url?id=2602981401.mp3">折风渡夜（少帅进行曲）</div>
         <div class="box" style="background-image: url('8.png');" data-music="https://music.163.com/song/media/outer/url?id=2143445544.mp3">DOAR CU TINE(雷军进行曲)</div>
-        <div class="box" style="background-image: url('9.png');" data-music="https://music.163.com/song/media/outer/url?id=2632667453.mp3">难却DJ</div>
+        <div class="box" style="background-image: url('9.png');" data-music="https://music.163.com/song/media/outer/url?id=2632667453.mp3">难却DJ（3D环绕）</div>
     </div>
 
     <audio id="audio-player" controls style="display:none;"></audio> <!-- 隐藏的音频播放器 -->
